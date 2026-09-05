@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jeeves — Propuesta Panamá · Fincash</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C96A;
+      --gold-pale: #FDF3D7;
+      --dark: #0A0A0A;
+      --dark2: #141414;
+      --dark3: #1E1E1E;
+      --dark4: #2A2A2A;
+      --gray: #6B7280;
+      --gray-light: #9CA3AF;
+      --white: #FFFFFF;
+      --off-white: #F9F9F7;
+      --border: rgba(255,255,255,0.08);
+      --usdc: #2775CA;
+      --usdt: #26A17B;
+      --kd-blue: #2E6BFF;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+      background: var(--off-white);
+      color: #111;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Typography ── */
+    h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; }
+    h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; }
+    h3 { font-size: 1.25rem; font-weight: 700; }
+    h4 { font-size: 1rem; font-weight: 600; }
+    p { color: #444; }
+    em { font-style: normal; color: var(--gold); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E5E7EB;
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 1rem; }
+    .nav-brand .jeeves-logo {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #0A0A0A 0%, #444 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-divider { width: 1px; height: 24px; background: #D1D5DB; }
+    .nav-client { font-size: 0.85rem; font-weight: 700; color: var(--kd-blue); letter-spacing: 0.02em; }
+    .nav-links { display: flex; gap: 0.5rem; }
+    .nav-links a {
+      font-size: 0.8rem; font-weight: 500; color: #555;
+      text-decoration: none; padding: 0.4rem 0.75rem;
+      border-radius: 6px; transition: all 0.2s;
+    }
+    .nav-links a:hover { background: #F3F4F6; color: #111; }
+    .nav-cta {
+      background: var(--dark); color: var(--white);
+      font-size: 0.82rem; font-weight: 600;
+      padding: 0.5rem 1.1rem; border-radius: 8px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #333; }
+
+    /* ── Section Wrapper ── */
+    .section { padding: 6rem 2rem; }
+    .section.dark { background: var(--dark); color: var(--white); }
+    .section.dark p { color: var(--gray-light); }
+    .section.dark-alt { background: var(--dark2); color: var(--white); }
+    .section.dark-alt p { color: var(--gray-light); }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      background: rgba(201,168,76,0.12); color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.25rem;
+    }
+    .section-badge.light { background: rgba(201,168,76,0.08); }
+
+    /* ── Hero ── */
+    #sec-hero {
+      background: var(--dark);
+      padding: 6rem 2rem 5rem;
+      color: var(--white);
+      position: relative; overflow: hidden;
+    }
+    #sec-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 80% 50%, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .hero-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .hero-title { color: var(--white); margin-bottom: 1.25rem; }
+    .hero-title em { color: var(--gold); }
+    .hero-subtitle { font-size: 1.1rem; color: #9CA3AF; margin-bottom: 2.5rem; line-height: 1.7; }
+    .hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .hero-stat { text-align: left; }
+    .hero-stat .num { font-size: 2rem; font-weight: 900; color: var(--gold); letter-spacing: -0.03em; }
+    .hero-stat .lbl { font-size: 0.75rem; color: #6B7280; font-weight: 500; margin-top: 0.15rem; }
+    .hero-cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--gold); color: var(--dark);
+      font-weight: 700; font-size: 0.9rem;
+      padding: 0.85rem 1.8rem; border-radius: 10px;
+      text-decoration: none; transition: all 0.2s;
+      display: inline-block; letter-spacing: -0.01em;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-ghost {
+      color: var(--gray-light); font-weight: 500; font-size: 0.9rem;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--white); }
+
+    /* Card visual — Jeeves Elite */
+    .hero-visual { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .jcard {
+      width: 100%; max-width: 470px; aspect-ratio: 1.586;
+      border-radius: 24px; padding: 1.9rem 2.1rem;
+      background: linear-gradient(125deg, #0D0D0D 0%, #1B1B1B 48%, #2B2412 100%);
+      border: 1px solid rgba(201,168,76,0.35);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03) inset;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transform: rotate(-2.5deg);
+    }
+    .jcard::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 55% 70% at 82% 12%, rgba(201,168,76,0.22) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .jcard::after {
+      content: '';
+      position: absolute; top: -60%; left: -20%;
+      width: 55%; height: 220%;
+      background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.045) 45%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.045) 55%, transparent 100%);
+      transform: rotate(12deg);
+      pointer-events: none;
+    }
+    .jcard-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .jcard-logo { font-size: 1.45rem; font-weight: 900; letter-spacing: -0.04em; color: var(--white); }
+    .jcard-elite {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase;
+      background: linear-gradient(135deg, var(--gold) 0%, #E8C96A 55%, #A9863A 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      border: 1px solid rgba(201,168,76,0.45);
+      padding: 0.32rem 0.8rem; border-radius: 999px;
+    }
+    .jcard-mid { display: flex; align-items: center; gap: 1rem; }
+    .jcard-chip {
+      width: 48px; height: 36px; border-radius: 7px;
+      background: linear-gradient(135deg, #E8C96A 0%, #C9A84C 45%, #9A7B32 100%);
+      position: relative; flex-shrink: 0;
+    }
+    .jcard-chip::before {
+      content: '';
+      position: absolute; inset: 6px;
+      border: 1px solid rgba(60,45,10,0.55); border-radius: 4px;
+    }
+    .jcard-chip::after {
+      content: '';
+      position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+      background: rgba(60,45,10,0.55);
+    }
+    .jcard-wave { font-size: 1.2rem; color: rgba(255,255,255,0.55); transform: rotate(90deg); }
+    .jcard-number {
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem); font-weight: 600; color: #E5E7EB;
+      letter-spacing: 0.14em; font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+    .jcard-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+    .jcard-holder .lbl, .jcard-exp .lbl {
+      font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: #6B7280; margin-bottom: 0.2rem;
+    }
+    .jcard-holder .val { font-size: 0.95rem; font-weight: 700; color: var(--white); letter-spacing: 0.08em; text-transform: uppercase; }
+    .jcard-exp .val { font-size: 0.85rem; font-weight: 600; color: #D1D5DB; letter-spacing: 0.08em; }
+    .jcard-company { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.06em; color: var(--gold); }
+    .jcard-caption { font-size: 0.78rem; color: #6B7280; text-align: center; }
+    .jcard-caption strong { color: var(--gold); font-weight: 700; }
+
+    /* ── Grid Layouts ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+
+    /* ── Feature Cards ── */
+    .feat-card {
+      background: var(--dark3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+    }
+    .feat-card-light {
+      background: var(--white); border: 1px solid #E5E7EB;
+      border-radius: var(--radius); padding: 1.75rem;
+    }
+    .feat-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feat-card h4 { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .feat-card p { font-size: 0.85rem; line-height: 1.65; }
+    .feat-card-light h4 { font-size: 1rem; font-weight: 700; color: #111; margin-bottom: 0.5rem; }
+    .feat-card-light p { font-size: 0.85rem; line-height: 1.65; color: #555; }
+
+    /* ── Section Header ── */
+    .sec-header { margin-bottom: 3rem; }
+    .sec-header h2 em { color: var(--gold); }
+    .sec-header p { font-size: 1.05rem; margin-top: 0.75rem; max-width: 640px; }
+    .sec-header.center { text-align: center; }
+    .sec-header.center p { margin-left: auto; margin-right: auto; }
+
+    /* ── Comparison Table ── */
+    .compare-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+    .compare-table th {
+      padding: 1rem 1.25rem; text-align: left;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      color: #9CA3AF; border-bottom: 1px solid var(--border);
+    }
+    .compare-table th:not(:first-child) { text-align: center; }
+    .compare-table td {
+      padding: 1rem 1.25rem; font-size: 0.88rem; color: #D1D5DB;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .compare-table td:not(:first-child) { text-align: center; }
+    .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .compare-table .col-jeeves { background: rgba(201,168,76,0.06); }
+    .compare-table th.col-jeeves { color: var(--gold); }
+    .check { color: #34D399; font-size: 1.1rem; }
+    .cross { color: #F87171; font-size: 1.1rem; }
+    .neutral { color: #9CA3AF; }
+
+    /* ── Calculator ── */
+    .calc-wrapper {
+      background: var(--white); border-radius: 20px;
+      border: 1px solid #E5E7EB; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .calc-header {
+      background: var(--dark); padding: 1.5rem 2rem;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .calc-header h3 { color: var(--white); font-size: 1rem; }
+    .calc-header .badge {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em;
+      background: rgba(201,168,76,0.2); color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.4);
+      padding: 0.25rem 0.65rem; border-radius: 999px;
+    }
+    .calc-body { padding: 2rem; }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .calc-section-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--gray); margin-bottom: 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid #E5E7EB;
+    }
+    .calc-field { margin-bottom: 1.25rem; }
+    .calc-field label { font-size: 0.82rem; font-weight: 600; color: #374151; display: block; margin-bottom: 0.4rem; }
+    .calc-field .hint { font-size: 0.72rem; color: var(--gray); margin-top: 0.25rem; }
+    .calc-input-wrap { position: relative; }
+    .calc-input-wrap .prefix {
+      position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+      font-size: 0.85rem; font-weight: 600; color: var(--gray);
+    }
+    .calc-input-wrap .suffix {
+      position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+      font-size: 0.75rem; color: var(--gray);
+    }
+    input[type="number"], input[type="text"], select {
+      width: 100%; padding: 0.65rem 0.9rem;
+      border: 1.5px solid #E5E7EB; border-radius: 8px;
+      font-size: 0.9rem; font-family: inherit;
+      background: #FAFAFA; color: #111;
+      transition: border-color 0.2s;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    input[type="number"]:focus, select:focus { outline: none; border-color: var(--gold); background: #fff; }
+    .has-prefix input { padding-left: 2rem; }
+    .has-suffix input { padding-right: 3.5rem; }
+    .editable { background: #FFFBEF !important; border-color: #E8C96A !important; }
+
+    .calc-results {
+      background: var(--dark); border-radius: 14px;
+      padding: 1.75rem; margin-top: 1.5rem;
+    }
+    .calc-results h4 { color: var(--white); margin-bottom: 1.25rem; font-size: 0.95rem; }
+    .result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-label { font-size: 0.82rem; color: #9CA3AF; }
+    .result-value { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+    .result-row.highlight { background: rgba(201,168,76,0.08); margin: 0 -1rem; padding: 0.75rem 1rem; border-radius: 8px; }
+    .result-row.highlight .result-label { color: var(--gold); font-weight: 600; }
+    .result-row.highlight .result-value { color: var(--gold); font-size: 1.05rem; }
+    .result-row.total { padding-top: 1rem; margin-top: 0.5rem; }
+    .result-row.total .result-label { color: var(--white); font-weight: 700; font-size: 0.9rem; }
+    .result-row.total .result-value { font-size: 1.3rem; color: var(--gold); }
+
+    /* ── Timeline / Flow ── */
+    .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+    .flow::before {
+      content: '';
+      position: absolute; top: 28px; left: 12.5%; right: 12.5%;
+      height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    }
+    .flow-step { text-align: center; padding: 0 1rem; }
+    .flow-dot {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--dark3); border: 2px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem; font-size: 1.4rem; position: relative; z-index: 1;
+    }
+    .flow-step h4 { font-size: 0.88rem; color: var(--white); margin-bottom: 0.4rem; }
+    .flow-step p { font-size: 0.78rem; color: #6B7280; }
+    .flow-time { font-size: 0.7rem; color: var(--gold); font-weight: 700; margin-top: 0.4rem; }
+
+    /* ── CTA Section ── */
+    #sec-cta { background: var(--dark); padding: 6rem 2rem; }
+    .cta-card {
+      background: linear-gradient(135deg, #1A1A1A 0%, #222 100%);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 24px; padding: 4rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 70%);
+    }
+    .cta-card h2 { color: var(--white); position: relative; z-index: 1; }
+    .cta-card p { color: #9CA3AF; font-size: 1.05rem; margin-top: 0.75rem; position: relative; z-index: 1; }
+    .contact-card {
+      display: inline-flex; align-items: center; gap: 1.5rem;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 1.5rem 2.5rem;
+      margin-top: 2.5rem; position: relative; z-index: 1;
+    }
+    .contact-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold) 0%, #E8A84C 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 900; color: var(--dark);
+    }
+    .contact-info { text-align: left; }
+    .contact-info .name { font-size: 1rem; font-weight: 700; color: var(--white); }
+    .contact-info .role { font-size: 0.8rem; color: #9CA3AF; margin-top: 0.1rem; }
+    .contact-info .email { font-size: 0.82rem; color: var(--gold); margin-top: 0.4rem; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; margin-top: 1.75rem; position: relative; z-index: 1; }
+
+    /* ── Highlight Banner ── */
+    .banner {
+      background: linear-gradient(90deg, rgba(201,168,76,0.12) 0%, rgba(201,168,76,0.04) 100%);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--radius); padding: 1.5rem 2rem;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .banner-icon { font-size: 2rem; }
+    .banner-text h4 { color: #111; margin-bottom: 0.25rem; }
+    .banner-text p { font-size: 0.85rem; color: #555; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--dark); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem; text-align: center;
+    }
+    footer p { font-size: 0.78rem; color: #6B7280; }
+    footer strong { color: #9CA3AF; }
+
+    /* ── Utilities ── */
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 2rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .text-gold { color: var(--gold); }
+    .text-sm { font-size: 0.82rem; }
+    .text-xs { font-size: 0.72rem; }
+    .font-bold { font-weight: 700; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero-grid, .grid-2, .calc-grid { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .grid-4 { grid-template-columns: 1fr 1fr; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      .flow::before { display: none; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <span class="jeeves-logo">Jeeves</span>
+    <div class="nav-divider"></div>
+    <span class="nav-client">FINCASH®</span>
+  </div>
+  <div class="nav-links">
+    <a href="#sec-crossborder">Transferencias Internacionales</a>
+    <a href="#sec-tarjetas">Tarjetas & Crédito</a>
+    <a href="#sec-calc">Calculadora</a>
+  </div>
+  <a href="#sec-cta" class="nav-cta">Propuesta PA →</a>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section id="sec-hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-label">Jeeves × Fincash · Propuesta Panamá 2026</div>
+        <h1 class="hero-title">
+          De fintech en crecimiento<br>
+          <em>a full fintech autogestionada.</em>
+        </h1>
+        <p class="hero-subtitle">
+          Centraliza la gestión financiera de Fincash: línea de crédito global para tarjetas y proveedores, conciliación automática con agentes de IA, y transferencias internacionales mediante tecnología blockchain con trazabilidad completa (MT103) para tu expansión a Colombia y Honduras — todo en una sola plataforma.
+        </p>
+        <div class="hero-cta-group">
+          <a href="#sec-calc" class="btn-primary">Calcula tu ahorro →</a>
+          <a href="#sec-cta" class="btn-ghost">Contactar a Vianey ↓</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="num">1-2 días</div>
+            <div class="lbl">Transferencias internacionales</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">US$0</div>
+            <div class="lbl">Costo de plataforma · Año 1</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">10</div>
+            <div class="lbl">Usuarios incluidos · Plan Gold</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">3→1</div>
+            <div class="lbl">Plataformas consolidadas</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="jcard">
+          <div class="jcard-top">
+            <span class="jcard-logo">Jeeves</span>
+            <span class="jcard-elite">Gold</span>
+          </div>
+          <div class="jcard-mid">
+            <div class="jcard-chip"></div>
+            <span class="jcard-wave">〣</span>
+          </div>
+          <div class="jcard-number">5399 &nbsp;••••&nbsp; •••• &nbsp;7216</div>
+          <div class="jcard-bottom">
+            <div class="jcard-holder">
+              <div class="lbl">Card Holder</div>
+              <div class="val">Guido Mercado</div>
+            </div>
+            <div class="jcard-exp">
+              <div class="lbl">Válida hasta</div>
+              <div class="val">08/29</div>
+            </div>
+            <div class="jcard-company">FINCASH®</div>
+          </div>
+        </div>
+        <p class="jcard-caption">Tarjeta corporativa <strong>Jeeves Gold</strong> · Emitida para Fincash · Línea de crédito global</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ① CROSSBORDER ═══════════════════════════════ -->
+<section id="sec-crossborder" class="section dark">
+  <div class="container">
+    <div class="sec-header">
+      <div class="section-badge">① Transferencias Internacionales · Tecnología Blockchain</div>
+      <h2>Transfiere a Colombia y Honduras<br><em>en 1-2 días, con trazabilidad total.</em></h2>
+      <p>Hoy la operación internacional de una fintech regulada depende de bancos corresponsales: giros SWIFT de 2 a 5 días hábiles, comisiones de corresponsalía y el riesgo permanente de rechazo por políticas de de-risking hacia Panamá. Jeeves ejecuta esas transferencias mediante tecnología blockchain, con liquidación en 1-2 días hábiles y trazabilidad completa mediante formato MT103 — clave para la expansión de Fincash hacia Colombia y Honduras.</p>
+    </div>
+
+    <!-- Flow -->
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-dot">📋</div>
+        <h4>Autorización</h4>
+        <p>Aprobación en plataforma con doble firma configurable</p>
+        <div class="flow-time">~ 1 min</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">🔑</div>
+        <h4>Procesamiento blockchain</h4>
+        <p>Jeeves ejecuta la transferencia desde custodia institucional</p>
+        <div class="flow-time">Automático</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">⚡</div>
+        <h4>Liquidación</h4>
+        <p>Los fondos llegan al destino sin bancos intermediarios</p>
+        <div class="flow-time">1-2 días hábiles</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">✅</div>
+        <h4>Conciliación</h4>
+        <p>Registro automático con IA · comprobante MT103 generado</p>
+        <div class="flow-time">Automático</div>
+      </div>
+    </div>
+
+    <div class="mt-4 grid-2">
+      <div class="feat-card" style="border-color: rgba(201,168,76,0.35);">
+        <div class="feat-icon">🌎</div>
+        <h4>Corredor Colombia · Honduras <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.06em; background:rgba(201,168,76,0.15); color:var(--gold); border:1px solid rgba(201,168,76,0.3); padding:0.2rem 0.55rem; border-radius:999px; vertical-align:middle; margin-left:0.4rem;">SIN SUMAR OTRA PLATAFORMA</span></h4>
+        <p>Envía y recibe fondos hacia <strong style="color:#E5E7EB;">Colombia y Honduras</strong> — los próximos mercados de expansión de Fincash — y hacia el resto de los 190 países disponibles. Los fondos quedan disponibles rápido para fondear tarjetas, pagar proveedores o financiar operaciones, con trazabilidad MT103 en cada movimiento.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏢</div>
+        <h4>Proveedores y desembolsos</h4>
+        <p>Paga en el exterior a proveedores tecnológicos, burós de crédito y aliados comerciales. El destinatario recibe el monto exacto, sin descuentos de corresponsales.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔍</div>
+        <h4>Trazabilidad MT103</h4>
+        <p>Cada transferencia internacional genera su comprobante MT103, con historial completo para auditoría y cumplimiento AML — clave para una fintech supervisada por la Superintendencia de Bancos de Panamá.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h4>Conciliación con agentes de IA</h4>
+        <p>Los agentes de IA de Jeeves concilian automáticamente gastos y facturas de cada transferencia, reduciendo drásticamente los tiempos operativos del equipo de gerencia.</p>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="banner" style="background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.2);">
+        <div class="banner-icon">🚀</div>
+        <div class="banner-text" style="color: white;">
+          <h4 style="color: var(--gold);">¿Por qué importa para Fincash?</h4>
+          <p style="color: #9CA3AF;">Porque el salto a un modelo <strong style="color: var(--gold);">full fintech autogestionado</strong> exige centralizar tesorería, control de gastos y transferencias internacionales en una sola plataforma — con un equipo de gerencia de solo 3 personas. Porque la expansión hacia Colombia y Honduras necesita rieles internacionales rápidos y trazables desde el día uno. Y porque para una fintech de microcréditos lo natural es operar con una plataforma financiera <strong style="color: var(--gold);">powered by AI</strong>, con el respaldo de cumplimiento que exige el negocio.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison table -->
+    <div class="mt-4">
+      <h3 style="color: var(--white); margin-bottom: 1.5rem;">Jeeves vs. banco corresponsal vs. gestión manual actual</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Criterio</th>
+            <th class="col-jeeves">Jeeves</th>
+            <th>Banco corresponsal (SWIFT)</th>
+            <th>Gestión manual actual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Transferencias internacionales</td>
+            <td class="col-jeeves text-gold font-bold">Blockchain · MT103 · 1-2 días hábiles</td>
+            <td>2–5 días hábiles + riesgo de rechazo (de-risking)</td>
+            <td><span class="cross">✗</span> Depende del banco</td>
+          </tr>
+          <tr>
+            <td>Trazabilidad de cada envío</td>
+            <td class="col-jeeves"><span class="check">✓</span> Comprobante MT103 automático</td>
+            <td><span class="neutral">~</span> Bajo pedido, con demoras</td>
+            <td><span class="cross">✗</span> Planillas manuales</td>
+          </tr>
+          <tr>
+            <td>Línea de crédito global</td>
+            <td class="col-jeeves"><span class="check">✓</span> Flexible: tarjetas, proveedores, centros de costo</td>
+            <td><span class="neutral">~</span> Con calificación crediticia</td>
+            <td><span class="cross">✗</span> No aplica</td>
+          </tr>
+          <tr>
+            <td>Tarjetas corporativas</td>
+            <td class="col-jeeves"><span class="check">✓</span> Físicas y virtuales, para todo el equipo</td>
+            <td><span class="neutral">~</span> Trámite bancario tradicional</td>
+            <td><span class="cross">✗</span> No ofrece</td>
+          </tr>
+          <tr>
+            <td>Comisión por transferencia</td>
+            <td class="col-jeeves text-gold font-bold">Spread fijo 0,50%</td>
+            <td>USD 25–50 + spread de corresponsalía 2–3%</td>
+            <td>Costo de horas de gestión</td>
+          </tr>
+          <tr>
+            <td>Cashback en tarjetas</td>
+            <td class="col-jeeves text-gold font-bold">1% primeros 3 meses</td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Gestión del gasto (límites, aprobaciones)</td>
+            <td class="col-jeeves"><span class="check">✓</span> Por usuario, monto y categoría</td>
+            <td><span class="cross">✗</span> Limitada</td>
+            <td><span class="cross">✗</span> Manual, sin políticas</td>
+          </tr>
+          <tr>
+            <td>Conciliación automática (IA)</td>
+            <td class="col-jeeves"><span class="check">✓</span> Agentes IA, sin intervención manual</td>
+            <td><span class="cross">✗</span> Manual</td>
+            <td><span class="cross">✗</span> 100% manual</td>
+          </tr>
+          <tr>
+            <td>Costo de plataforma</td>
+            <td class="col-jeeves text-gold font-bold">US$0 · Año 1 · desde Año 2: US$2.400/año (hasta 10 usuarios)</td>
+            <td>Mantenimiento de cuenta + comisiones</td>
+            <td>Costo de horas del equipo de gerencia</td>
+          </tr>
+          <tr>
+            <td>Plataformas a administrar</td>
+            <td class="col-jeeves text-gold font-bold">1 — todo incluido</td>
+            <td>Banco + gestor de gastos aparte</td>
+            <td>Hojas de cálculo + banco</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ② TARJETAS ═══════════════════════════════ -->
+<section id="sec-tarjetas" class="section">
+  <div class="container">
+    <div class="sec-header">
+      <div class="section-badge light">② Tarjetas Corporativas · Línea de Crédito Global</div>
+      <h2>Centraliza el gasto,<br><em>escala sin fricción.</em></h2>
+      <p>Con 3 personas en gerencia y un gasto mensual cercano a los USD 20.000, Fincash necesita control granular sin sumar tareas operativas. Jeeves habilita una <strong>línea de crédito global</strong> cuya asignación es flexible: tarjetas corporativas, pagos a proveedores o por centro de costos, todo desde el mismo panel donde viven tus transferencias internacionales.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="feat-card-light">
+        <div class="feat-icon">🌐</div>
+        <h4>Línea de crédito global flexible</h4>
+        <p>Una sola línea que asignas según necesites: tarjetas corporativas, pagos a proveedores o distribución por centro de costos. Se ajusta a como crece Fincash, sin renegociar cada vez que cambian las prioridades.</p>
+      </div>
+      <div class="feat-card-light">
+        <div class="feat-icon">🤖</div>
+        <h4>Conciliación con agentes de IA</h4>
+        <p>Los agentes de inteligencia artificial de Jeeves automatizan la conciliación de gastos y facturas, reduciendo drásticamente los tiempos operativos de un equipo de gerencia de solo 3 personas.</p>
+      </div>
+      <div class="feat-card-light">
+        <div class="feat-icon">💳</div>
+        <h4>Tarjetas para todo tu equipo</h4>
+        <p>Tarjetas físicas y virtuales para los usuarios de gerencia, con la posibilidad de escalar hasta 10 usuarios con el Plan Gold. Congela, ajusta límites o cancela en un clic.</p>
+      </div>
+      <div class="feat-card-light">
+        <div class="feat-icon">📑</div>
+        <h4>Control total de políticas de gasto</h4>
+        <p>Cada consumo se mapea a su centro de costos, con comprobante digital adjunto y trazabilidad completa — clave para el cumplimiento que exige una fintech de microcréditos supervisada en Panamá.</p>
+      </div>
+    </div>
+
+    <!-- Live purchase demo -->
+    <div class="mt-4" style="background: #0A0A0A; border-radius: 20px; padding: 2rem; border: 1px solid #222;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <span style="font-size: 0.7rem; color: #6B7280; text-transform: uppercase; letter-spacing: 0.1em;">COMPRA APROBADA · EN VIVO</span>
+        <span style="font-size: 0.7rem; color: #34D399; font-weight: 700;">● CONFIRMADA</span>
+      </div>
+      <div style="font-size: 2.5rem; font-weight: 900; color: white; letter-spacing: -0.04em;">USD 850.00<span style="color: var(--gold); font-size: 1rem; font-weight: 700; margin-left: 0.5rem;">Buró de Crédito · Verificación de solicitantes</span></div>
+      <div style="font-size: 0.82rem; color: #6B7280; margin-top: 0.3rem;">Tarjeta virtual #Riesgo-Crediticio · Titular: Fincash · Centro de costos: Riesgo</div>
+      <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap;">
+        <span style="font-size: 0.78rem; background: rgba(52,211,153,0.1); color: #34D399; border: 1px solid rgba(52,211,153,0.2); padding: 0.4rem 0.9rem; border-radius: 999px;">✓ Contra línea de crédito global</span>
+        <span style="font-size: 0.78rem; background: rgba(52,211,153,0.1); color: #34D399; border: 1px solid rgba(52,211,153,0.2); padding: 0.4rem 0.9rem; border-radius: 999px;">✓ Trazabilidad MT103 disponible</span>
+        <span style="font-size: 0.78rem; background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); padding: 0.4rem 0.9rem; border-radius: 999px;">⚡ Sin costo de plataforma · Año 1</span>
+        <span style="font-size: 0.78rem; background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); padding: 0.4rem 0.9rem; border-radius: 999px;">🎁 1% cashback · primeros 3 meses</span>
+        <span style="font-size: 0.78rem; background: rgba(99,102,241,0.1); color: #818CF8; border: 1px solid rgba(99,102,241,0.2); padding: 0.4rem 0.9rem; border-radius: 999px;">📊 Conciliado por agentes IA</span>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="banner">
+        <div class="banner-icon">👇</div>
+        <div class="banner-text">
+          <h4>¿Cuánto es en plata?</h4>
+          <p>Ingresa los números de Fincash en la calculadora y mira el ahorro en vivo. <a href="#sec-calc" style="color: var(--gold); font-weight: 700; text-decoration: none;">Ir a la calculadora →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ③ CALCULADORA ═══════════════════════════════ -->
+<section id="sec-calc" class="section" style="background: #F3F4F6;">
+  <div class="container">
+    <div class="sec-header center">
+      <div class="section-badge light">③ Calculadora de Ahorro</div>
+      <h2>Calcula tu ahorro<br><em>exacto anual.</em></h2>
+      <p>Tres números y listo: cuánto gastas en tarjetas, cuánto transfieres al exterior y qué te cuesta hoy. El ahorro se actualiza al instante.</p>
+    </div>
+
+    <div class="calc-wrapper">
+      <div class="calc-header">
+        <h3>💰 Calculadora de ahorro · Fincash × Jeeves</h3>
+        <span class="badge">Celdas en dorado = editables · Recalcula al instante</span>
+      </div>
+      <div class="calc-body">
+        <div class="calc-grid">
+          <!-- LEFT: Inputs -->
+          <div>
+            <div class="calc-section-title">💳 Tarjetas corporativas y línea de crédito</div>
+
+            <div class="calc-field">
+              <label>Gasto mensual en tarjetas corporativas</label>
+              <div class="calc-input-wrap has-prefix has-suffix">
+                <span class="prefix">$</span>
+                <input type="number" id="gasto_tarjeta" value="20000" step="500" class="editable" oninput="calcular()">
+                <span class="suffix">USD/mes</span>
+              </div>
+              <div class="hint">Buró de crédito, SaaS, proveedores tecnológicos y gastos del equipo de gerencia.</div>
+            </div>
+
+            <div class="calc-section-title" style="margin-top: 1.5rem;">🌎 Transferencias internacionales · Colombia y Honduras</div>
+
+            <div class="calc-field">
+              <label>Volumen mensual de transferencias internacionales</label>
+              <div class="calc-input-wrap has-prefix has-suffix">
+                <span class="prefix">$</span>
+                <input type="number" id="vol_transfer" value="15000" step="1000" class="editable" oninput="calcular()">
+                <span class="suffix">USD/mes</span>
+              </div>
+              <div class="hint">Estimado para el corredor de expansión de Fincash. Edita según tu volumen real.</div>
+            </div>
+
+            <div class="calc-field">
+              <label>Costo actual por transferencia (SWIFT + corresponsalía)</label>
+              <div class="calc-input-wrap has-suffix">
+                <input type="number" id="costo_swift" value="2.5" step="0.1" class="editable" oninput="calcular()">
+                <span class="suffix">%</span>
+              </div>
+              <div class="hint">Comisiones + spread que hoy paga Fincash por cada transferencia internacional.</div>
+            </div>
+
+            <div class="calc-field">
+              <label>Spread Jeeves en transferencias por blockchain</label>
+              <div class="calc-input-wrap has-suffix">
+                <input type="number" value="0.50" readonly style="background: #F3F4F6; color: #6B7280; cursor: default;">
+                <span class="suffix">% fijo</span>
+              </div>
+              <div class="hint">Tarifa fija — liquidación en 1-2 días hábiles, con trazabilidad MT103.</div>
+            </div>
+
+            <div style="background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25); border-radius: 10px; padding: 1rem 1.25rem; margin-top: 0.5rem;">
+              <p style="font-size: 0.8rem; color: #374151;"><strong>Con Jeeves:</strong> costo de plataforma US$0 durante el primer año (lanzamiento en Panamá) + <strong>1% de cashback</strong> en tarjetas los primeros 3 meses. Desde el año 2, Plan Gold: USD 2.400/año, incluye hasta 10 usuarios.</p>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;">
+              <span style="font-size: 0.72rem; font-weight: 700; background: #FDF3D7; color: #8A6D2B; padding: 0.3rem 0.7rem; border-radius: 999px;">✦ Costo de plataforma US$0 · Año 1</span>
+              <span style="font-size: 0.72rem; font-weight: 600; background: #F3F4F6; color: #374151; padding: 0.3rem 0.7rem; border-radius: 999px;">✓ Hasta 10 usuarios · Plan Gold</span>
+              <span style="font-size: 0.72rem; font-weight: 600; background: #F3F4F6; color: #374151; padding: 0.3rem 0.7rem; border-radius: 999px;">✓ Tarjetas virtuales y físicas ilimitadas</span>
+              <span style="font-size: 0.72rem; font-weight: 600; background: #FDF3D7; color: #8A6D2B; padding: 0.3rem 0.7rem; border-radius: 999px;">🎁 Cashback 1% · primeros 3 meses</span>
+              <span style="font-size: 0.72rem; font-weight: 600; background: #F3F4F6; color: #374151; padding: 0.3rem 0.7rem; border-radius: 999px;">📅 USD 2.400/año desde el Año 2</span>
+            </div>
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div>
+            <div class="calc-section-title">✅ Resumen de Ahorro Anual</div>
+
+            <div class="calc-results">
+              <h4>Ahorro con Jeeves · Año 1</h4>
+
+              <div class="result-row">
+                <span class="result-label">Costo actual de transferencias internacionales</span>
+                <span class="result-value" id="r_transfer_actual">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Transferencias con Jeeves (blockchain, 0,50% fijo)</span>
+                <span class="result-value" id="r_transfer_jeeves">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">🌎 Ahorro en transferencias internacionales</span>
+                <span class="result-value" id="r_ahorro_transfer" style="color: #34D399;">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">🎁 Cashback 1% (primeros 3 meses)</span>
+                <span class="result-value" id="r_cashback" style="color: #34D399;">—</span>
+              </div>
+              <div style="height: 1px; background: rgba(255,255,255,0.06); margin: 1rem 0;"></div>
+
+              <div class="result-row">
+                <span class="result-label">⚡ Costo de plataforma Jeeves en Panamá (Año 1)</span>
+                <span class="result-value" style="color: #34D399;">US$ 0</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">📅 Costo de plataforma desde el Año 2 (Plan Gold · hasta 10 usuarios)</span>
+                <span class="result-value" style="color: #9CA3AF;">US$ 2,400/año</span>
+              </div>
+
+              <div style="height: 1px; background: rgba(255,255,255,0.06); margin: 1rem 0;"></div>
+
+              <div class="result-row highlight">
+                <span class="result-label">🏆 Ahorro total año 1 (USD)</span>
+                <span class="result-value" id="r_neto">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">Plataformas a administrar</span>
+                <span class="result-value" style="color: #34D399;">3 → 1</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; background: #F9F9F7; border: 1px solid #E5E7EB; border-radius: 12px; padding: 1.25rem;">
+              <p style="font-size: 0.75rem; color: #6B7280;">* Cálculos estimados para análisis. Transferencias internacionales: spread fijo Jeeves de 0,50% vía tecnología blockchain (liquidación en 1-2 días hábiles, trazabilidad MT103) vs. el costo actual de SWIFT/corresponsalía, editable. El cashback del 1% aplica sobre el gasto en tarjetas corporativas durante los primeros 3 meses. Jeeves no cobra costo de plataforma durante el primer año en Panamá (lanzamiento) — a partir del año 2, Plan Gold USD 2.400/año, incluye hasta 10 usuarios y control total de políticas de gasto.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ECOSISTEMA ═══════════════════════════════ -->
+<section class="section dark">
+  <div class="container">
+    <div class="sec-header center">
+      <div class="section-badge">El ecosistema completo</div>
+      <h2>Todo conectado.<br><em>Un solo panel.</em></h2>
+      <p>Jeeves no es solo transferencias y tarjetas. Es la plataforma financiera que le permite a Fincash operar como una fintech full autogestionada, en un solo lugar.</p>
+    </div>
+
+    <div class="grid-3" style="margin-bottom: 3rem;">
+      <div class="feat-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🌎</div>
+        <h4>Transferencias Internacionales</h4>
+        <p style="font-size: 0.82rem;">Paga y recibe hacia Colombia, Honduras y 190 países, vía tecnología blockchain con trazabilidad MT103</p>
+      </div>
+      <div class="feat-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">💳</div>
+        <h4>Línea de Crédito Global</h4>
+        <p style="font-size: 0.82rem;">Tarjetas corporativas y pagos a proveedores desde una sola línea, con asignación flexible</p>
+      </div>
+      <div class="feat-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🤖</div>
+        <h4>Agentes de IA</h4>
+        <p style="font-size: 0.82rem;">Conciliación automática de gastos y facturas, sin intervención manual del equipo de gerencia</p>
+      </div>
+      <div class="feat-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎛️</div>
+        <h4>Control</h4>
+        <p style="font-size: 0.82rem;">Visibilidad y gobierno del gasto corporativo en tiempo real</p>
+      </div>
+      <div class="feat-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🧾</div>
+        <h4>Comprobantes</h4>
+        <p style="font-size: 0.82rem;">Captura y mapeo automático de comprobantes a tu contabilidad</p>
+      </div>
+      <div class="feat-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📊</div>
+        <h4>Analytics</h4>
+        <p style="font-size: 0.82rem;">Dashboards, reportes personalizados y exportación a tu sistema contable favorito</p>
+      </div>
+    </div>
+
+    <!-- Big numbers -->
+    <div class="grid-4">
+      <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.04); border-radius: var(--radius); border: 1px solid var(--border);">
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: -0.04em;">190</div>
+        <div style="font-size: 0.78rem; color: #6B7280; margin-top: 0.3rem;">Países alcanzables</div>
+      </div>
+      <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.04); border-radius: var(--radius); border: 1px solid var(--border);">
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: -0.04em;">1-2 días</div>
+        <div style="font-size: 0.78rem; color: #6B7280; margin-top: 0.3rem;">Liquidación internacional (blockchain + MT103)</div>
+      </div>
+      <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.04); border-radius: var(--radius); border: 1px solid var(--border);">
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: -0.04em;">US$0</div>
+        <div style="font-size: 0.78rem; color: #6B7280; margin-top: 0.3rem;">Costo de plataforma · Año 1</div>
+      </div>
+      <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.04); border-radius: var(--radius); border: 1px solid var(--border);">
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: -0.04em;">3→1</div>
+        <div style="font-size: 0.78rem; color: #6B7280; margin-top: 0.3rem;">Plataformas consolidadas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA ═══════════════════════════════ -->
+<section id="sec-cta">
+  <div class="container">
+    <div class="cta-card">
+      <div class="section-badge" style="background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.3);">¿Listos para dar el siguiente paso?</div>
+      <h2>Guido, sigamos avanzando.</h2>
+      <p>Como conversamos, el próximo paso es la cotización formal con los módulos y las 3 tarjetas para tu equipo de gerencia. La aprobación de la cuenta toma entre 2 y 3 semanas, y luego coordinamos una reunión para configurar la plataforma.</p>
+
+      <div class="contact-card">
+        <div class="contact-avatar">VS</div>
+        <div class="contact-info">
+          <div class="name">Vianey Sánchez</div>
+          <div class="role">Account Executive · Jeeves</div>
+          <div class="email">vianey.sanchez@tryjeeves.com</div>
+          <div class="email">+52 55 1390 5919</div>
+        </div>
+      </div>
+      <p style="font-size: 0.78rem; color: #9CA3AF; margin-top: 1rem; position: relative; z-index: 1;">Con el acompañamiento de <strong style="color: var(--gold);">Juliana Ramos</strong> · Panamá, Jeeves</p>
+
+      <div class="cta-buttons">
+        <a href="mailto:vianey.sanchez@tryjeeves.com?subject=Fincash%20%C3%97%20Jeeves%20%C2%B7%20Propuesta%20Panam%C3%A1&body=Hola%20Vianey%2C%20soy%20Guido%20Mercado%20de%20Fincash.%20Me%20interesa%20avanzar%20con%20la%20cotizaci%C3%B3n%20de%20la%20l%C3%ADnea%20de%20cr%C3%A9dito%20global%20y%20las%20transferencias%20internacionales%20para%20Fincash."
+           class="btn-primary">✓ Contactar a Vianey</a>
+      </div>
+      <p style="font-size: 0.75rem; color: #6B7280; margin-top: 1rem; position: relative; z-index: 1;">Se abrirá tu cliente de correo con un mensaje listo para Vianey Sánchez · vianey.sanchez@tryjeeves.com</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <p>
+    <strong>Jeeves</strong> · tryjeeves.com · Propuesta Línea de Crédito Global + Transferencias Internacionales · Fincash · Panamá<br>
+    <span style="margin-top: 0.3rem; display: inline-block;">Elaborado por Vianey Sánchez y Juliana Ramos · Jeeves Panamá</span>
+  </p>
+</footer>
+
+<!-- ═══════════════════════════════ JS CALCULADORA ═══════════════════════════════ -->
+<script>
+  function fmtUSD(n, decimals = 0) {
+    return new Intl.NumberFormat('es-PA', {
+      style: 'currency', currency: 'USD',
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }).format(n);
+  }
+
+  function calcular() {
+    const gasto_tarjeta = parseFloat(document.getElementById('gasto_tarjeta').value) || 20000;
+    const vol_transfer  = parseFloat(document.getElementById('vol_transfer').value) || 15000;
+    const costo_swift   = (parseFloat(document.getElementById('costo_swift').value) || 2.5) / 100;
+
+    const SPREAD_JEEVES   = 0.005;  // 0,50% fijo transferencias vía blockchain
+    const CASHBACK_PCT    = 0.01;   // 1% de cashback
+    const CASHBACK_MESES  = 3;      // primeros 3 meses
+
+    // ── Ahorros ──
+    const transfer_actual = vol_transfer * 12 * costo_swift;
+    const transfer_jeeves = vol_transfer * 12 * SPREAD_JEEVES;
+    const ahorro_transfer = transfer_actual - transfer_jeeves;
+    const cashback        = gasto_tarjeta * CASHBACK_MESES * CASHBACK_PCT;
+
+    // ── Total año 1 (sin costo de plataforma en Panamá) ──
+    const ahorro = ahorro_transfer + cashback;
+
+    // ── Render ──
+    document.getElementById('r_transfer_actual').textContent = fmtUSD(transfer_actual);
+    document.getElementById('r_transfer_jeeves').textContent = fmtUSD(transfer_jeeves);
+    document.getElementById('r_ahorro_transfer').textContent = fmtUSD(ahorro_transfer);
+    document.getElementById('r_cashback').textContent        = fmtUSD(cashback);
+    document.getElementById('r_neto').textContent            = fmtUSD(ahorro);
+  }
+
+  calcular();
+</script>
+
+</body>
+</html>
